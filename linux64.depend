@@ -1,0 +1,81 @@
+# depslib dependency file v1.0
+1568157813 source:/ice/Downloads/D1_20193_Base/main.cpp
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<math.h>
+	"extras.h"
+
+1571183367 
+
+1566924478 /ice/Downloads/D1_20193_Base/extras.h
+
+1571183367 source:/ice/Downloads/Trabalho-CG/main.cpp
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<math.h>
+	"extras.h"
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<math.h>
+
+1571178524 /ice/Downloads/Trabalho-CG/extras.h
+
+1568684617 source:/ice/CG/Trabalho-CG/main.cpp
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<math.h>
+	<GLFW/glfw3.h>
+	"extras.h"
+
+1568678941 /ice/CG/Trabalho-CG/extras.h
+
+1572334448 source:/ice/Downloads/Trabalho-CG/shared/glcWavefrontObject.cpp
+	"glcWavefrontObject.h"
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+
+1572334448 /ice/Downloads/Trabalho-CG/shared/glcWavefrontObject.h
+	<math.h>
+	<stdio.h>
+	<GL/gl.h>
+
+1573602536 source:/ice/Downloads/Trabalho-CG/main.cpp
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<math.h>
+	<GL/glext.h>
+	<cstdlib>
+	<time.h>
+	"./shared/glcTexture.h"
+	<chrono>
+	<thread>
+	<iostream>
+	"./shared/glcWavefrontObject.h"
+	"extras.h"
+
+1572334416 /ice/Downloads/Trabalho-CG/extras.h
+
+1535591431 source:/ice/Downloads/Trabalho-CG/shared/glcTexture.cpp
+	<string>
+	<stdio.h>
+	<malloc.h>
+	"GL/glut.h"
+	"png.h"
+	"glcTexture.h"
+
+1535591433 /ice/Downloads/Trabalho-CG/shared/glcTexture.h
+	<string>
+
