@@ -180,18 +180,36 @@ float calculaProdutoEscalar(vertice v1, vertice v2)
     return v1.x * v2.x + v1.y * v2.y;
 }
 
-void refleteBolinha(vertice verticeNormal)
-{
+float calculaAnguloEntreVetores(vertice verticeNormal, vetor vetorMovimentoBolinha) {
+    float produtoEscalar = calculaProdutoEscalar(verticeNormal, vetorMovimentoBolinha.v1);
     vetor vetorNormal;
     vetorNormal.v1 = verticeNormal;
 
-    float produtoEscalar = calculaProdutoEscalar(verticeNormal, vetorMovimentoBolinha.v1);
+    float produtoDosModulos = calculaModuloVetor(vetorNormal) * calculaModuloVetor(vetorMovimentoBolinha);
 
-    vetor refletido;
-    refletido.v1.x = vetorMovimentoBolinha.v1.x - 2 * produtoEscalar * verticeNormal.x;
-    refletido.v1.y = vetorMovimentoBolinha.v1.y - 2 * produtoEscalar * verticeNormal.y;
+    float theta = acos(produtoEscalar / produtoDosModulos);
 
-    vetorMovimentoBolinha = refletido;
+    float angulo = theta*(180/3.1416);
+    cout << angulo << endl;
+    return angulo;
+}
+
+void refleteBolinha(vertice verticeNormal)
+{
+    float angulo = calculaAnguloEntreVetores(verticeNormal, vetorMovimentoBolinha);
+    if(angulo > 90) {
+        vetor vetorNormal;
+        vetorNormal.v1 = verticeNormal;
+
+        float produtoEscalar = calculaProdutoEscalar(verticeNormal, vetorMovimentoBolinha.v1);
+
+        vetor refletido;
+        refletido.v1.x = vetorMovimentoBolinha.v1.x - 2 * produtoEscalar * verticeNormal.x;
+        refletido.v1.y = vetorMovimentoBolinha.v1.y - 2 * produtoEscalar * verticeNormal.y;
+
+        vetorMovimentoBolinha = refletido;
+    }
+
 }
 
 void reflexaoBarra()
@@ -1697,8 +1715,8 @@ void mouse(int button, int state, int x, int y)
                 if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
                 {
                     desenhaSetaControle = false;
-                    vetorMovimentoBolinha.v1.x = vetorSeta->v1.x / 110;
-                    vetorMovimentoBolinha.v1.y = vetorSeta->v1.y / 110;
+                    vetorMovimentoBolinha.v1.x = vetorSeta->v1.x / 30;
+                    vetorMovimentoBolinha.v1.y = vetorSeta->v1.y / 30;
                     primeiroLancamento = true;
                 }
             }
