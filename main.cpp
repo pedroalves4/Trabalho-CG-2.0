@@ -14,7 +14,7 @@
 //#include <GLFW/glfw3.h>
 
 #include "extras.h"
-#define NUM_OBJECTS 7
+#define NUM_OBJECTS 8
 
 /// Estruturas iniciais para armazenar vertices
 //  Voc� poder� utiliz�-las adicionando novos m�todos (de acesso por exemplo) ou usar suas pr�prias estruturas.
@@ -110,7 +110,8 @@ char objectFiles[NUM_OBJECTS][50] =
     "../data/obj/flowers.obj",
     "../data/obj/porsche.obj",
     "../data/obj/rose+vase.obj",
-    "../data/obj/soccerball.obj"
+    "../data/obj/soccerball.obj",
+    "../data/obj/12190_Heart_v1_L3.obj"
 };
 
 object *objectList;
@@ -1362,7 +1363,7 @@ void caiObjetoEsquerda(int time)
         }
         efeitoEsq = false;
     }
-    objectManager->SelectObject(6);
+    objectManager->SelectObject(7);
     objectManager->SetShadingMode(SMOOTH_SHADING); // Possible values: FLAT_SHADING e SMOOTH_SHADING
     objectManager->SetRenderMode(USE_MATERIAL);    // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
     objectManager->Unitize();
@@ -1387,7 +1388,7 @@ void caiObjetoDireita(int time)
         }
         efeitoDir = false;
     }
-    objectManager->SelectObject(6);
+    objectManager->SelectObject(7);
     objectManager->SetShadingMode(SMOOTH_SHADING); // Possible values: FLAT_SHADING e SMOOTH_SHADING
     objectManager->SetRenderMode(USE_MATERIAL);    // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
     objectManager->Unitize();
