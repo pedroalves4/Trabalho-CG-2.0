@@ -99,6 +99,7 @@ bool objDireita = false;
 vetor *vetorSeta = new vetor();
 barrinhas *vetorBloquinhos = new barrinhas[15];
 vetor vetorMovimentoBolinha;
+int ultimaColisao = 999;
 
 
 char objectFiles[NUM_OBJECTS][50] =
@@ -190,14 +191,13 @@ float calculaAnguloEntreVetores(vertice verticeNormal, vetor vetorMovimentoBolin
     float theta = acos(produtoEscalar / produtoDosModulos);
 
     float angulo = theta*(180/3.1416);
-    cout << angulo << endl;
     return angulo;
 }
 
-void refleteBolinha(vertice verticeNormal)
+void refleteBolinha(vertice verticeNormal, int origemColisao = -1)
 {
     float angulo = calculaAnguloEntreVetores(verticeNormal, vetorMovimentoBolinha);
-    if(angulo > 90) {
+    if(angulo > 90 && origemColisao!=ultimaColisao) {
         vetor vetorNormal;
         vetorNormal.v1 = verticeNormal;
 
@@ -208,23 +208,11 @@ void refleteBolinha(vertice verticeNormal)
         refletido.v1.y = vetorMovimentoBolinha.v1.y - 2 * produtoEscalar * verticeNormal.y;
 
         vetorMovimentoBolinha = refletido;
+        cout << angulo << endl;
+
+        ultimaColisao = origemColisao;
     }
 
-}
-
-void reflexaoBarra()
-{
-    vertice vetorNormal;
-    vertice verticesBarraFaceSuperior[3] = {{0.25 + xBarra, -0.625, 0.0625},
-        {0.25 + xBarra, -0.625, 0.125},
-        {-0.25 + xBarra, -0.625, 0.125}
-    };
-
-    triangle t = {verticesBarraFaceSuperior[0], verticesBarraFaceSuperior[1], verticesBarraFaceSuperior[2]};
-    CalculaNormal(t, &vetorNormal);
-
-    if (yBolinha < -0.60 && fabs(xBarra - xBolinha) < 0.4)
-        refleteBolinha(vetorNormal);
 }
 
 void reflexaoBloquinhos()
@@ -514,6 +502,7 @@ void restart(bool PassouDeFase = false)
             vidasRestantes--;
         }
     }
+    ultimaColisao = -1;
 }
 
 void passaDeFase()
@@ -792,7 +781,7 @@ void desenhaPlataforma()
     glEnd();
     if (verificaColisaoX(faceDireita[0]))
     {
-        refleteBolinha(vetorNormal);
+        refleteBolinha(vetorNormal, 4);
     }
 
     /// ---------------- FACE ESQUERDA ---------------
@@ -805,7 +794,7 @@ void desenhaPlataforma()
         glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
         if (verificaColisaoTriangulo(t[i]))
         {
-            refleteBolinha(vetorNormal);
+            refleteBolinha(vetorNormal, 5);
         }
     }
     for (int i = 0; i < 9; i++)
@@ -823,7 +812,7 @@ void desenhaPlataforma()
         glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
         if (verificaColisaoTriangulo(t[i]))
         {
-            refleteBolinha(vetorNormal);
+            refleteBolinha(vetorNormal, 6);
         }
     }
     for (int i = 0; i < 9; i++)
@@ -839,7 +828,7 @@ void desenhaPlataforma()
         glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
         if (verificaColisaoTriangulo(trianguloBarrigaEsquerda[i]) && vetorMovimentoBolinha.v1.x * vetorNormal.x < 1)
         {
-            refleteBolinha(vetorNormal);
+            refleteBolinha(vetorNormal, 2);
         }
     }
     glBegin(GL_TRIANGLE_STRIP); ///desenha a barriga j� costurando os tri�ngulos
@@ -872,7 +861,7 @@ void desenhaPlataforma()
         glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
         if (verificaColisaoTriangulo(triangulosBarrigaDireita[i]) && vetorMovimentoBolinha.v1.x * vetorNormal.x < 1)
         {
-            refleteBolinha(vetorNormal);
+            refleteBolinha(vetorNormal, 3);
         }
     }
     ///desenha a barriga j� costurando os tri�ngulos
@@ -908,7 +897,7 @@ void desenhaPlataforma()
     glEnd();
     if (verificaColisaoY(faceSuperior[0]))
     {
-        refleteBolinha(vetorNormal);
+        refleteBolinha(vetorNormal, 7);
     }
 }
 
@@ -990,7 +979,7 @@ void desenhaRebatedor()
         CalculaNormal(triangulosBarrigaRebatedor[i], &vetorNormal);
         glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
         if (verificaColisaoTriangulo(triangulosBarrigaRebatedor[i]))
-            refleteBolinha(vetorNormal);
+            refleteBolinha(vetorNormal, 1);
     }
 }
 
@@ -1072,7 +1061,7 @@ void desenhaBarrinhasDeBater()
                 CalculaNormal(t[0], &vetorNormal);
                 if (verificaColisaoTriangulo(t[0]))
                 {
-                    refleteBolinha(vetorNormal);
+                    refleteBolinha(vetorNormal, 8);
                     vetorBloquinhos[cont].mostra = false;
                 }
                 glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
@@ -1087,7 +1076,7 @@ void desenhaBarrinhasDeBater()
                 glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
                 if (verificaColisaoTriangulo(t[1]))
                 {
-                    refleteBolinha(vetorNormal);
+                    refleteBolinha(vetorNormal, 9);
                     vetorBloquinhos[cont].mostra = false;
                 }
                 for (int i = 0; i < 4; i++)
@@ -1101,7 +1090,7 @@ void desenhaBarrinhasDeBater()
                 glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
                 if (verificaColisaoTriangulo(t[2]))
                 {
-                    refleteBolinha(vetorNormal);
+                    refleteBolinha(vetorNormal, 10);
                     vetorBloquinhos[cont].mostra = false;
                 }
                 for (int i = 0; i < 4; i++)
@@ -1115,7 +1104,7 @@ void desenhaBarrinhasDeBater()
                 glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
                 if (verificaColisaoTriangulo(t[3]))
                 {
-                    refleteBolinha(vetorNormal);
+                    refleteBolinha(vetorNormal, 11);
                     vetorBloquinhos[cont].mostra = false;
                 }
                 for (int i = 0; i < 4; i++)
@@ -1129,7 +1118,7 @@ void desenhaBarrinhasDeBater()
                 glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
                 if (verificaColisaoTriangulo(t[4]))
                 {
-                    refleteBolinha(vetorNormal);
+                    refleteBolinha(vetorNormal, 12);
                     vetorBloquinhos[cont].mostra = false;
                 }
                 for (int i = 0; i < 4; i++)
@@ -1143,7 +1132,7 @@ void desenhaBarrinhasDeBater()
                 glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
                 if (verificaColisaoTriangulo(t[5]))
                 {
-                    refleteBolinha(vetorNormal);
+                    refleteBolinha(vetorNormal, 13);
                     vetorBloquinhos[cont].mostra = false;
                 }
                 for (int i = 0; i < 4; i++)
@@ -1715,8 +1704,8 @@ void mouse(int button, int state, int x, int y)
                 if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
                 {
                     desenhaSetaControle = false;
-                    vetorMovimentoBolinha.v1.x = vetorSeta->v1.x / 30;
-                    vetorMovimentoBolinha.v1.y = vetorSeta->v1.y / 30;
+                    vetorMovimentoBolinha.v1.x = vetorSeta->v1.x / 40;
+                    vetorMovimentoBolinha.v1.y = vetorSeta->v1.y / 40;
                     primeiroLancamento = true;
                 }
             }
