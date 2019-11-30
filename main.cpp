@@ -6,11 +6,11 @@
 #include <GL/glext.h>
 #include <cstdlib>
 #include <time.h> /* time */
-#include "./shared/glcTexture.h"
+#include "shared/glcTexture.h"
 #include <chrono>
 #include <thread>
 #include <iostream>
-#include "./shared/glcWavefrontObject.h"
+#include "shared/glcWavefrontObject.h"
 //#include <GLFW/glfw3.h>
 
 #include "extras.h"
@@ -474,12 +474,16 @@ void preencheVetorBarrinhas()
     {
         if (fase == 2 || fase == 3)
             vetorBloquinhos[i].mostra = true;
+        else
+            vetorBloquinhos[i].mostra = false;
     }
 
     for (int i = 10; i < 15; i++)
     {
         if (fase == 3)
             vetorBloquinhos[i].mostra = true;
+        else
+            vetorBloquinhos[i].mostra = false;
     }
 }
 
@@ -629,8 +633,6 @@ void desenhaPlataforma()
     float xFaceEsquerdaSuperior = -1.0f;
     float yFaceEsquerdaSuperior = 0.6f;
     float zFaceEsquerdaSuperior = 0.25f;
-    float contTx = 0.0;
-    float contTy = 0.0;
     faceEsquerdaSuperior[0] = {xFaceEsquerdaSuperior, yFaceEsquerdaSuperior, zFaceEsquerdaSuperior};
     for (int i = 1; i < 9; i++)
     {
@@ -698,6 +700,8 @@ void desenhaPlataforma()
     }
     ///ESTRUTURAS FACE ESQUERDA - FIM
 
+    ///ESTRUTURAS FACE DIREITA - INICIO
+
     vertice faceDireitaBarriga[20];
     float passoXDir = 0.01f;
     float passoYDir = 0.1333f; /// 1.2/9
@@ -737,7 +741,71 @@ void desenhaPlataforma()
         triangulosBarrigaDireita[i] = {faceDireitaBarriga[i], faceDireitaBarriga[i + 1], faceDireitaBarriga[i + 2]};
     }
 
-    triangle t[25] = {{base[0], base[1], base[3]},
+    vertice faceDireitaInferior[9];
+    float xFaceDireitaInferior = 1.0f;
+    float yFaceDireitaInferior = -1.0f;
+    float zFaceDireitaInferior = 0.25f;
+    faceDireitaInferior[0] = {xFaceDireitaInferior, yFaceDireitaInferior, zFaceDireitaInferior};
+    for (int i = 1; i < 9; i++)
+    {
+        if (i % 2 == 0)
+        {
+            zFaceDireitaInferior += 0.25f;
+        }
+        else
+        {
+            zFaceDireitaInferior -= 0.25f;
+        }
+        faceDireitaInferior[i] = {xFaceDireitaInferior, yFaceDireitaInferior, zFaceDireitaInferior};
+
+        if (i == 1 || i == 6)
+        {
+            yFaceDireitaInferior += 0.10;
+        }
+        else if (i == 7)
+        {
+            continue;
+        }
+        else
+        {
+            yFaceDireitaInferior += 0.05;
+        }
+    }
+
+    vertice faceDireitaSuperior[9];
+    float xFaceDireitaSuperior = 1.0f;
+    float yFaceDireitaSuperior = 0.6f;
+    float zFaceDireitaSuperior = 0.25f;
+    float contTx = 0.0;
+    float contTy = 0.0;
+    faceDireitaSuperior[0] = {xFaceDireitaSuperior, yFaceDireitaSuperior, zFaceDireitaSuperior};
+    for (int i = 1; i < 9; i++)
+    {
+        if (i % 2 == 0)
+        {
+            zFaceDireitaSuperior += 0.25f;
+        }
+        else
+        {
+            zFaceDireitaSuperior -= 0.25f;
+        }
+        faceDireitaSuperior[i] = {xFaceDireitaSuperior, yFaceDireitaSuperior, zFaceDireitaSuperior};
+
+        if (i == 1 || i == 6)
+        {
+            yFaceDireitaSuperior += 0.10;
+        }
+        else if (i == 7)
+        {
+            continue;
+        }
+        else
+        {
+            yFaceDireitaSuperior += 0.05;
+        }
+    }
+
+    triangle t[27] = {{base[0], base[1], base[3]},
         {faceEsquerdaInferior[0], faceEsquerdaInferior[1], faceEsquerdaInferior[2]},
         {faceEsquerdaInferior[1], faceEsquerdaInferior[2], faceEsquerdaInferior[3]},
         {faceEsquerdaInferior[2], faceEsquerdaInferior[3], faceEsquerdaInferior[4]},
@@ -753,10 +821,25 @@ void desenhaPlataforma()
         {faceEsquerdaSuperior[5], faceEsquerdaSuperior[6], faceEsquerdaSuperior[7]},
 
         {faceDireita[0], faceDireita[1], faceDireita[2]},
-        {faceSuperior[0], faceSuperior[1], faceSuperior[2]}
+        {faceSuperior[0], faceSuperior[1], faceSuperior[2]},
+
+        {faceDireitaInferior[0], faceDireitaInferior[1], faceDireitaInferior[2]}, /// indice 15
+        {faceDireitaInferior[1], faceDireitaInferior[2], faceDireitaInferior[3]},
+        {faceDireitaInferior[2], faceDireitaInferior[3], faceDireitaInferior[4]},
+        {faceDireitaInferior[3], faceDireitaInferior[4], faceDireitaInferior[5]},
+        {faceDireitaInferior[4], faceDireitaInferior[5], faceDireitaInferior[6]},
+        {faceDireitaInferior[5], faceDireitaInferior[6], faceDireitaInferior[7]},
+
+        {faceDireitaSuperior[0], faceDireitaSuperior[1], faceDireitaSuperior[2]}, /// indice 21
+        {faceDireitaSuperior[1], faceDireitaSuperior[2], faceDireitaSuperior[3]},
+        {faceDireitaSuperior[2], faceDireitaSuperior[3], faceDireitaSuperior[4]},
+        {faceDireitaSuperior[3], faceDireitaSuperior[4], faceDireitaSuperior[5]},
+        {faceDireitaSuperior[4], faceDireitaSuperior[5], faceDireitaSuperior[6]},
+        {faceDireitaSuperior[5], faceDireitaSuperior[6], faceDireitaSuperior[7]} ///indice 26
     };
 
-    //setColorBase();
+    /// ESTRUTURAS FACE DIREITA - FIM
+
     if (pintaPlataformaVermelho)
         setColor(1.0, 0.0, 0.0);
     textureManager->Bind(12);
@@ -786,20 +869,6 @@ void desenhaPlataforma()
     }
     glEnd();
     textureManager->Disable();
-
-    setColor(0.6, 0.6, 0.9);
-    glBegin(GL_QUADS);
-    CalculaNormal(t[13], &vetorNormal);
-    glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
-    for (int i = 0; i < 4; i++)
-    {
-        glVertex3f(faceDireita[i].x, faceDireita[i].y, faceDireita[i].z);
-    }
-    glEnd();
-    if (verificaColisaoX(faceDireita[0]))
-    {
-        refleteBolinha(vetorNormal, 4);
-    }
 
     /// ---------------- FACE ESQUERDA ---------------
     /// parte inferior
@@ -1011,6 +1080,9 @@ void desenhaPlataforma()
     glEnd();
     ///--------FIM DA FACE ESQUERDA---------
 
+
+    /// --------INICIO DA FACE ESQUERDA-----
+
     ///------BARRIGA DIREITA-----
     textureManager->Bind(13);
     glBegin(GL_TRIANGLE_STRIP);
@@ -1143,7 +1215,84 @@ void desenhaPlataforma()
     glVertex3f(faceDireitaBarriga[19].x, faceDireitaBarriga[19].y, faceDireitaBarriga[19].z);
     glVertex3f(faceDireitaBarriga[1].x, faceDireitaBarriga[1].y, faceDireitaBarriga[1].z);
     glEnd();
-    ///------FIM DA BARRIGA DIREITA-----
+    /// FIM DA BARRIGA DIREITA
+
+    setColor(0.6, 0.6, 0.9);
+    textureManager->Bind(11);
+    glBegin(GL_TRIANGLE_STRIP);
+    for (int i = 15; i < 20; i++)
+    {
+        CalculaNormal(t[i], &vetorNormal);
+        glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
+        if (verificaColisaoTriangulo(t[i]))
+        {
+            refleteBolinha(vetorNormal, 15);
+        }
+    }
+    for (int i = 0; i < 9; i++)
+    {
+        if(i == 0)
+            glTexCoord2f(0.0, 1.0);
+        if(i == 1)
+            glTexCoord2f(0.0, 0.0);
+        if(i == 2)
+            glTexCoord2f(0.15, 1.0);
+        if(i == 3)
+            glTexCoord2f(0.3, 0.0);
+        if(i == 4)
+            glTexCoord2f(0.45, 1.0);
+        if(i == 5)
+            glTexCoord2f(0.6, 0.0);
+        if(i == 6)
+            glTexCoord2f(0.75, 1.0);
+        if(i == 7)
+            glTexCoord2f(0.9, 0.0);
+        if(i == 8)
+            glTexCoord2f(0.9, 1.0);
+
+        glVertex3f(faceDireitaInferior[i].x, faceDireitaInferior[i].y, faceDireitaInferior[i].z);
+    }
+    glEnd();
+
+    /// parte superior
+    textureManager->Bind(11);
+    glBegin(GL_TRIANGLE_STRIP);
+    for (int i = 21; i < 26; i++)
+    {
+        CalculaNormal(t[i], &vetorNormal);
+        glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
+        if (verificaColisaoTriangulo(t[i]))
+        {
+            refleteBolinha(vetorNormal, 16);
+        }
+    }
+    for (int i = 0; i < 9; i++)
+    {
+        if(i == 0)
+            glTexCoord2f(0.0, 1.0);
+        if(i == 1)
+            glTexCoord2f(0.0, 0.0);
+        if(i == 2)
+            glTexCoord2f(0.15, 1.0);
+        if(i == 3)
+            glTexCoord2f(0.3, 0.0);
+        if(i == 4)
+            glTexCoord2f(0.45, 1.0);
+        if(i == 5)
+            glTexCoord2f(0.6, 0.0);
+        if(i == 6)
+            glTexCoord2f(0.75, 1.0);
+        if(i == 7)
+            glTexCoord2f(0.9, 0.0);
+        if(i == 8)
+            glTexCoord2f(0.9, 1.0);
+
+        glVertex3f(faceDireitaSuperior[i].x, faceDireitaSuperior[i].y, faceDireitaSuperior[i].z);
+    }
+    glEnd();
+
+    /// --------FIM DA FACE ESQUERDA-----
+
 
     setColor(0.6, 0.6, 0.9);
     textureManager->Bind(11);
