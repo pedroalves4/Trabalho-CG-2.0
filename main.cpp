@@ -14,7 +14,7 @@
 //#include <GLFW/glfw3.h>
 
 #include "extras.h"
-#define NUM_OBJECTS 8
+#define NUM_OBJECTS 7
 
 /// Estruturas iniciais para armazenar vertices
 //  Voc� poder� utiliz�-las adicionando novos m�todos (de acesso por exemplo) ou usar suas pr�prias estruturas.
@@ -110,8 +110,8 @@ char objectFiles[NUM_OBJECTS][50] =
     "../data/obj/flowers.obj",
     "../data/obj/porsche.obj",
     "../data/obj/rose+vase.obj",
-    "../data/obj/soccerball.obj",
-    "../data/obj/12190_Heart_v1_L3.obj"
+    "../data/obj/soccerball.obj"
+    //"../data/obj/12190_Heart_v1_L3.obj"
 };
 
 object *objectList;
@@ -181,8 +181,8 @@ float calculaProdutoEscalar(vertice v1, vertice v2)
 {
     return v1.x * v2.x + v1.y * v2.y;
 }
-
-float calculaAnguloEntreVetores(vertice verticeNormal, vetor vetorMovimentoBolinha) {
+float calculaAnguloEntreVetores(vertice verticeNormal, vetor vetorMovimentoBolinha)
+{
     float produtoEscalar = calculaProdutoEscalar(verticeNormal, vetorMovimentoBolinha.v1);
     vetor vetorNormal;
     vetorNormal.v1 = verticeNormal;
@@ -194,11 +194,11 @@ float calculaAnguloEntreVetores(vertice verticeNormal, vetor vetorMovimentoBolin
     float angulo = theta*(180/3.1416);
     return angulo;
 }
-
 void refleteBolinha(vertice verticeNormal, int origemColisao = -1)
 {
     float angulo = calculaAnguloEntreVetores(verticeNormal, vetorMovimentoBolinha);
-    if(angulo > 90 && origemColisao!=ultimaColisao) {
+    if(angulo > 90 && origemColisao!=ultimaColisao)
+    {
         vetor vetorNormal;
         vetorNormal.v1 = verticeNormal;
 
@@ -213,7 +213,21 @@ void refleteBolinha(vertice verticeNormal, int origemColisao = -1)
 
         ultimaColisao = origemColisao;
     }
+}
 
+void reflexaoBarra()
+{
+    vertice vetorNormal;
+    vertice verticesBarraFaceSuperior[3] = {{0.25 + xBarra, -0.625, 0.0625},
+        {0.25 + xBarra, -0.625, 0.125},
+        {-0.25 + xBarra, -0.625, 0.125}
+    };
+
+    triangle t = {verticesBarraFaceSuperior[0], verticesBarraFaceSuperior[1], verticesBarraFaceSuperior[2]};
+    CalculaNormal(t, &vetorNormal);
+
+    if (yBolinha < -0.60 && fabs(xBarra - xBolinha) < 0.4)
+        refleteBolinha(vetorNormal);
 }
 
 void reflexaoBloquinhos()
@@ -615,6 +629,8 @@ void desenhaPlataforma()
     float xFaceEsquerdaSuperior = -1.0f;
     float yFaceEsquerdaSuperior = 0.6f;
     float zFaceEsquerdaSuperior = 0.25f;
+    float contTx = 0.0;
+    float contTy = 0.0;
     faceEsquerdaSuperior[0] = {xFaceEsquerdaSuperior, yFaceEsquerdaSuperior, zFaceEsquerdaSuperior};
     for (int i = 1; i < 9; i++)
     {
@@ -740,11 +756,10 @@ void desenhaPlataforma()
         {faceSuperior[0], faceSuperior[1], faceSuperior[2]}
     };
 
-    setColorBase();
+    //setColorBase();
     if (pintaPlataformaVermelho)
         setColor(1.0, 0.0, 0.0);
-    else
-        setColor(0.1, 0.1, 0.1);
+    textureManager->Bind(12);
     glBegin(GL_QUADS);
     CalculaNormal(t[0], &vetorNormal);
     glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
@@ -770,6 +785,7 @@ void desenhaPlataforma()
         glVertex3f(base[i].x, base[i].y, base[i].z);
     }
     glEnd();
+    textureManager->Disable();
 
     setColor(0.6, 0.6, 0.9);
     glBegin(GL_QUADS);
@@ -788,6 +804,7 @@ void desenhaPlataforma()
     /// ---------------- FACE ESQUERDA ---------------
     /// parte inferior
     setColor(0.6, 0.6, 0.9);
+    textureManager->Bind(11);
     glBegin(GL_TRIANGLE_STRIP);
     for (int i = 1; i < 6; i++)
     {
@@ -800,12 +817,31 @@ void desenhaPlataforma()
     }
     for (int i = 0; i < 9; i++)
     {
+        if(i == 0)
+            glTexCoord2f(0.0, 1.0);
+        if(i == 1)
+            glTexCoord2f(0.0, 0.0);
+        if(i == 2)
+            glTexCoord2f(0.15, 1.0);
+        if(i == 3)
+            glTexCoord2f(0.3, 0.0);
+        if(i == 4)
+            glTexCoord2f(0.45, 1.0);
+        if(i == 5)
+            glTexCoord2f(0.6, 0.0);
+        if(i == 6)
+            glTexCoord2f(0.75, 1.0);
+        if(i == 7)
+            glTexCoord2f(0.9, 0.0);
+        if(i == 8)
+            glTexCoord2f(0.9, 1.0);
 
         glVertex3f(faceEsquerdaInferior[i].x, faceEsquerdaInferior[i].y, faceEsquerdaInferior[i].z);
     }
     glEnd();
 
     /// parte superior
+    textureManager->Bind(11);
     glBegin(GL_TRIANGLE_STRIP);
     for (int i = 7; i < 12; i++)
     {
@@ -818,6 +854,25 @@ void desenhaPlataforma()
     }
     for (int i = 0; i < 9; i++)
     {
+        if(i == 0)
+            glTexCoord2f(0.0, 1.0);
+        if(i == 1)
+            glTexCoord2f(0.0, 0.0);
+        if(i == 2)
+            glTexCoord2f(0.15, 1.0);
+        if(i == 3)
+            glTexCoord2f(0.3, 0.0);
+        if(i == 4)
+            glTexCoord2f(0.45, 1.0);
+        if(i == 5)
+            glTexCoord2f(0.6, 0.0);
+        if(i == 6)
+            glTexCoord2f(0.75, 1.0);
+        if(i == 7)
+            glTexCoord2f(0.9, 0.0);
+        if(i == 8)
+            glTexCoord2f(0.9, 1.0);
+
         glVertex3f(faceEsquerdaSuperior[i].x, faceEsquerdaSuperior[i].y, faceEsquerdaSuperior[i].z);
     }
     glEnd();
@@ -832,9 +887,111 @@ void desenhaPlataforma()
             refleteBolinha(vetorNormal, 2);
         }
     }
+
+    textureManager->Bind(13);
     glBegin(GL_TRIANGLE_STRIP); ///desenha a barriga j� costurando os tri�ngulos
     for (int i = 0; i < 20; i++)
     {
+        if( i == 0)
+        {
+            glTexCoord2f(0.0, 0.0);
+        }
+
+        if( i == 1)
+        {
+            glTexCoord2f(0.0, 1.0);
+        }
+
+        if( i == 2)
+        {
+            glTexCoord2f(0.11, 0.0);
+        }
+
+        if( i == 3)
+        {
+            glTexCoord2f(0.11, 1.0);
+        }
+
+        if( i == 4)
+        {
+            glTexCoord2f(0.22, 0.0);
+        }
+
+        if( i == 5)
+        {
+            glTexCoord2f(0.22, 1.0);
+        }
+
+        if( i == 6)
+        {
+            glTexCoord2f(0.33, 0.0);
+        }
+
+        if( i == 7)
+        {
+            glTexCoord2f(0.33, 1.0);
+        }
+
+        if( i == 8)
+        {
+            glTexCoord2f(0.44, 0.0);
+        }
+
+        if( i == 9)
+        {
+            glTexCoord2f(0.44, 1.0);
+        }
+
+        if( i == 10)
+        {
+            glTexCoord2f(0.55, 0.0);
+        }
+
+        if( i == 11)
+        {
+            glTexCoord2f(0.55, 1.0);
+        }
+
+        if( i == 12)
+        {
+            glTexCoord2f(0.66, 0.0);
+        }
+
+        if( i == 13)
+        {
+            glTexCoord2f(0.66, 1.0);
+        }
+
+        if( i == 14)
+        {
+            glTexCoord2f(0.77, 0.0);
+        }
+
+        if( i == 15)
+        {
+            glTexCoord2f(0.77, 1.0);
+        }
+
+        if( i == 16)
+        {
+            glTexCoord2f(0.88, 0.0);
+        }
+
+        if( i == 17)
+        {
+            glTexCoord2f(0.88, 1.0);
+        }
+
+        if( i == 18)
+        {
+            glTexCoord2f(0.99, 0.0);
+        }
+
+        if( i == 19)
+        {
+            glTexCoord2f(0.99, 1.0);
+        }
+
         glVertex3f(faceEsquerdaBarriga[i].x, faceEsquerdaBarriga[i].y, faceEsquerdaBarriga[i].z);
     }
     glEnd();
@@ -855,6 +1012,7 @@ void desenhaPlataforma()
     ///--------FIM DA FACE ESQUERDA---------
 
     ///------BARRIGA DIREITA-----
+    textureManager->Bind(13);
     glBegin(GL_TRIANGLE_STRIP);
     for (int i = 1; i <= 18; i++)
     {
@@ -868,6 +1026,106 @@ void desenhaPlataforma()
     ///desenha a barriga j� costurando os tri�ngulos
     for (int i = 0; i < 20; i++)
     {
+        if( i == 0)
+        {
+            glTexCoord2f(0.0, 0.0);
+        }
+
+        if( i == 1)
+        {
+            glTexCoord2f(0.0, 1.0);
+        }
+
+        if( i == 2)
+        {
+            glTexCoord2f(0.11, 0.0);
+        }
+
+        if( i == 3)
+        {
+            glTexCoord2f(0.11, 1.0);
+        }
+
+        if( i == 4)
+        {
+            glTexCoord2f(0.22, 0.0);
+        }
+
+        if( i == 5)
+        {
+            glTexCoord2f(0.22, 1.0);
+        }
+
+        if( i == 6)
+        {
+            glTexCoord2f(0.33, 0.0);
+        }
+
+        if( i == 7)
+        {
+            glTexCoord2f(0.33, 1.0);
+        }
+
+        if( i == 8)
+        {
+            glTexCoord2f(0.44, 0.0);
+        }
+
+        if( i == 9)
+        {
+            glTexCoord2f(0.44, 1.0);
+        }
+
+        if( i == 10)
+        {
+            glTexCoord2f(0.55, 0.0);
+        }
+
+        if( i == 11)
+        {
+            glTexCoord2f(0.55, 1.0);
+        }
+
+        if( i == 12)
+        {
+            glTexCoord2f(0.66, 0.0);
+        }
+
+        if( i == 13)
+        {
+            glTexCoord2f(0.66, 1.0);
+        }
+
+        if( i == 14)
+        {
+            glTexCoord2f(0.77, 0.0);
+        }
+
+        if( i == 15)
+        {
+            glTexCoord2f(0.77, 1.0);
+        }
+
+        if( i == 16)
+        {
+            glTexCoord2f(0.88, 0.0);
+        }
+
+        if( i == 17)
+        {
+            glTexCoord2f(0.88, 1.0);
+        }
+
+        if( i == 18)
+        {
+            glTexCoord2f(0.99, 0.0);
+        }
+
+        if( i == 19)
+        {
+            glTexCoord2f(0.99, 1.0);
+        }
+
         glVertex3f(faceDireitaBarriga[i].x, faceDireitaBarriga[i].y, faceDireitaBarriga[i].z);
     }
     glEnd();
@@ -888,11 +1146,29 @@ void desenhaPlataforma()
     ///------FIM DA BARRIGA DIREITA-----
 
     setColor(0.6, 0.6, 0.9);
+    textureManager->Bind(11);
     glBegin(GL_QUADS);
     CalculaNormal(t[14], &vetorNormal); // Passa face triangular e endere�o do vetor normal de sa�da
     glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
     for (int i = 0; i < 4; i++)
     {
+        if(i == 0)
+        {
+            glTexCoord2f(0.0, 0.0);
+        }
+        if(i == 1)
+        {
+            glTexCoord2f(1.0, 0.0);
+        }
+        if(i == 2)
+        {
+            glTexCoord2f(1.0, 1.0);
+        }
+        if(i == 3)
+        {
+            glTexCoord2f(0.0, 1.0);
+        }
+
         glVertex3f(faceSuperior[i].x, faceSuperior[i].y, faceSuperior[i].z);
     }
     glEnd();
@@ -912,14 +1188,8 @@ void desenhaRebatedor()
     float zBarrigaRebatedor = 0.0f;
     int k = 4;
     barrigaRebatedor[0] = {xBarrigaRebatedor, yBarrigaRebatedor, zBarrigaRebatedor};
-
-    for (int i = 1; i < 20; i++)
-    {
-        if (i % 2 == 0)
-            zBarrigaRebatedor = 0.00f;
-        else
-            zBarrigaRebatedor = 0.15f;
-    }
+    float contTx = 0;
+    float contTy = 0;
 
     for (int i = 1; i < 20; i++)
     {
@@ -946,27 +1216,65 @@ void desenhaRebatedor()
         }
     }
 
-    setColor(1.0, 0.3, 0.3);
+    textureManager->Bind(0);
+    //setColor(1.0, 0.3, 0.3);
     glBegin(GL_TRIANGLE_STRIP); ///desenha a barriga j� costurando os tri�ngulos
     for (int i = 0; i < 20; i++)
     {
+        if( i == 0)
+        {
+            glTexCoord2f(0.0, 0.0);
+        }
+        else
+        {
+            glTexCoord2f(contTx, contTy);
+        }
         glVertex3f(barrigaRebatedor[i].x, barrigaRebatedor[i].y, barrigaRebatedor[i].z);
+
+        if(i % 2 == 0)
+        {
+            contTx += 0.1;
+            contTy += 0.1;
+        }
+
     }
     glEnd();
+    contTx = 0;
+    contTy = 0;
 
+    textureManager->Bind(0);
     glBegin(GL_POLYGON); /// Preenche a tampa da barriga
     for (int i = 1; i < 20; i += 2)
     {
+        if( i == 1)
+        {
+            glTexCoord2f(0.0, 0.0);
+        }
+        else
+        {
+            glTexCoord2f(contTx, contTy);
+        }
         glVertex3f(barrigaRebatedor[i].x, barrigaRebatedor[i].y, barrigaRebatedor[i].z);
+        if(i % 2 != 0)
+        {
+            contTx += 0.1;
+            contTy += 0.1;
+        }
     }
     glEnd();
-
+    textureManager->Bind(3);
     glBegin(GL_POLYGON); /// preenche a lateral de fora da barriga
+
+    glTexCoord2f(0.0, 0.0);
     glVertex3f(barrigaRebatedor[0].x, barrigaRebatedor[0].y, barrigaRebatedor[0].z);
+    glTexCoord2f(1.0, 0.0);
     glVertex3f(barrigaRebatedor[18].x, barrigaRebatedor[18].y, barrigaRebatedor[18].z);
+    glTexCoord2f(1.0, 1.0);
     glVertex3f(barrigaRebatedor[19].x, barrigaRebatedor[19].y, barrigaRebatedor[19].z);
+    glTexCoord2f(0.0, 1.0);
     glVertex3f(barrigaRebatedor[1].x, barrigaRebatedor[1].y, barrigaRebatedor[1].z);
     glEnd();
+    textureManager->Disable();
 
     triangle triangulosBarrigaRebatedor[18];
     for (int i = 0; i < 18; i++)
@@ -1363,7 +1671,8 @@ void caiObjetoEsquerda(int time)
         }
         efeitoEsq = false;
     }
-    objectManager->SelectObject(7);
+    //textureManager->Bind(13);
+    objectManager->SelectObject(6);
     objectManager->SetShadingMode(SMOOTH_SHADING); // Possible values: FLAT_SHADING e SMOOTH_SHADING
     objectManager->SetRenderMode(USE_MATERIAL);    // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
     objectManager->Unitize();
@@ -1388,7 +1697,7 @@ void caiObjetoDireita(int time)
         }
         efeitoDir = false;
     }
-    objectManager->SelectObject(7);
+    objectManager->SelectObject(6);
     objectManager->SetShadingMode(SMOOTH_SHADING); // Possible values: FLAT_SHADING e SMOOTH_SHADING
     objectManager->SetRenderMode(USE_MATERIAL);    // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
     objectManager->Unitize();
@@ -1449,6 +1758,104 @@ void drawObject()
     passaDeFase();
 }
 
+void loadSkyBox()
+{
+    glPushMatrix();
+    glPushAttrib(GL_ENABLE_BIT);
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_BLEND);
+
+    // Just in case we set all vertices to white.
+    glColor4f(1,1,1,1);
+
+    glRotatef(50.0, 1.0, 0.0, 0.0);
+
+    // Render the front quad
+    textureManager->Bind(7);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex3f(  5.0f, -5.0f, -5.0f );
+    glTexCoord2f(1, 0);
+    glVertex3f( -5.0f, -5.0f, -5.0f );
+    glTexCoord2f(1, 1);
+    glVertex3f( -5.0f,  5.0f, -5.0f );
+    glTexCoord2f(0, 1);
+    glVertex3f(  5.0f,  5.0f, -5.0f );
+    glEnd();
+
+    // Render the left quad
+    textureManager->Bind(8);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex3f(  5.0f, -5.0f,  5.0f );
+    glTexCoord2f(1, 0);
+    glVertex3f(  5.0f, -5.0f, -5.0f );
+    glTexCoord2f(1, 1);
+    glVertex3f(  5.0f,  5.0f, -5.0f );
+    glTexCoord2f(0, 1);
+    glVertex3f(  5.0f,  5.0f,  5.0f );
+    glEnd();
+
+    // Render the back quad
+    textureManager->Bind(5);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex3f( -5.0f, -5.0f,  5.0f );
+    glTexCoord2f(1, 0);
+    glVertex3f(  5.0f, -5.0f,  5.0f );
+    glTexCoord2f(1, 1);
+    glVertex3f(  5.0f,  5.0f,  5.0f );
+    glTexCoord2f(0, 1);
+    glVertex3f( -5.0f,  5.0f,  5.0f );
+
+    glEnd();
+
+    // Render the right quad
+    textureManager->Bind(9);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex3f( -5.0f, -5.0f, -5.0f );
+    glTexCoord2f(1, 0);
+    glVertex3f( -5.0f, -5.0f,  5.0f );
+    glTexCoord2f(1, 1);
+    glVertex3f( -5.0f,  5.0f,  5.0f );
+    glTexCoord2f(0, 1);
+    glVertex3f( -5.0f,  5.0f, -5.0f );
+    glEnd();
+
+    // Render the top quad
+    textureManager->Bind(10);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 1);
+    glVertex3f( -5.0f,  5.0f, -5.0f );
+    glTexCoord2f(0, 0);
+    glVertex3f( -5.0f,  5.0f,  5.0f );
+    glTexCoord2f(1, 0);
+    glVertex3f(  5.0f,  5.0f,  5.0f );
+    glTexCoord2f(1, 1);
+    glVertex3f(  5.0f,  5.0f, -5.0f );
+    glEnd();
+
+    // Render the bottom quad
+    textureManager->Bind(6);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex3f( -5.0f, -5.0f, -5.0f );
+    glTexCoord2f(0, 1);
+    glVertex3f( -5.0f, -5.0f,  5.0f );
+    glTexCoord2f(1, 1);
+    glVertex3f(  5.0f, -5.0f,  5.0f );
+    glTexCoord2f(1, 0);
+    glVertex3f(  5.0f, -5.0f, -5.0f );
+    glEnd();
+
+    // Restore enable bits and matrix
+    glPopAttrib();
+    glPopMatrix();
+}
+
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1466,9 +1873,6 @@ void display(void)
     if(!initialState)
     {
 
-        textureManager->Bind(0);
-
-
         if (!projecao_ortogonal)
         {
             glOrtho(-ortho, ortho, -ortho * h / w, ortho * h / w, -100.0, 100.0);
@@ -1481,7 +1885,7 @@ void display(void)
 
         if (projecao_ortogonal)
         {
-            gluLookAt(.0, -2.0, 1.8, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+            gluLookAt(0.0, -2.5, 2.8, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 
             glPushMatrix();
@@ -1497,6 +1901,8 @@ void display(void)
                 glRotatef(rotacaoY, 0.0, 1.0, 0.0);
                 glRotatef(rotacaoX, 1.0, 0.0, 0.0);
             }
+
+            loadSkyBox();
 
             drawObject();
 
@@ -1537,6 +1943,7 @@ void display(void)
         glutSwapBuffers();
     }
 
+    textureManager->Disable();
 }
 
 void idle()
@@ -1705,8 +2112,8 @@ void mouse(int button, int state, int x, int y)
                 if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
                 {
                     desenhaSetaControle = false;
-                    vetorMovimentoBolinha.v1.x = vetorSeta->v1.x / 40;
-                    vetorMovimentoBolinha.v1.y = vetorSeta->v1.y / 40;
+                    vetorMovimentoBolinha.v1.x = vetorSeta->v1.x / 70;
+                    vetorMovimentoBolinha.v1.y = vetorSeta->v1.y / 70;
                     primeiroLancamento = true;
                 }
             }
@@ -1751,9 +2158,22 @@ void init(void)
     preencheVetorBarrinhas();
 
     textureManager = new glcTexture();            // Criação do arquivo que irá gerenciar as texturas
-    textureManager->SetNumberOfTextures(2);       // Estabelece o número de texturas que será utilizado
+    textureManager->SetNumberOfTextures(14);       // Estabelece o número de texturas que será utilizado
     textureManager->CreateTexture("../data/wood.png", 0); // Para testar magnificação, usar a imagem marble128
     textureManager->CreateTexture("../data/arkanoidd.png", 1);
+    textureManager->CreateTexture("../data/paper.png", 3);
+    textureManager->CreateTexture("../data/brick-2.png", 2);
+    textureManager->CreateTexture("../data/basketball.png", 4);
+    textureManager->CreateTexture("../data/back.png", 5);
+    textureManager->CreateTexture("../data/bottom.png", 6);
+    textureManager->CreateTexture("../data/front.png", 7);
+    textureManager->CreateTexture("../data/left.png", 8);
+    textureManager->CreateTexture("../data/right.png", 9);
+    textureManager->CreateTexture("../data/top.png", 10);
+    textureManager->CreateTexture("../data/sky.png", 11);
+    textureManager->CreateTexture("../data/sky2.png", 12);
+    textureManager->CreateTexture("../data/skybarriga.png", 13);
+
 }
 
 /// Main
