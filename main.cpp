@@ -110,8 +110,9 @@ char objectFiles[NUM_OBJECTS][50] =
     "../data/obj/flowers.obj",
     "../data/obj/porsche.obj",
     "../data/obj/rose+vase.obj",
-    "../data/obj/soccerball.obj"
-    //"../data/obj/12190_Heart_v1_L3.obj"
+    "../data/obj/2K.obj"
+    //"../data/obj/soccerball.obj",
+    //"../data/obj/Earth%202K.obj"
 };
 
 object *objectList;
@@ -1820,10 +1821,10 @@ void caiObjetoEsquerda(int time)
         }
         efeitoEsq = false;
     }
-    //textureManager->Bind(13);
+    textureManager->Bind(14);
     objectManager->SelectObject(6);
     objectManager->SetShadingMode(SMOOTH_SHADING); // Possible values: FLAT_SHADING e SMOOTH_SHADING
-    objectManager->SetRenderMode(USE_MATERIAL);    // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
+    objectManager->SetRenderMode(USE_TEXTURE_AND_MATERIAL);    // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
     objectManager->Unitize();
     objectManager->Draw();
     glPopMatrix();
@@ -1846,10 +1847,11 @@ void caiObjetoDireita(int time)
         }
         efeitoDir = false;
     }
+    textureManager->Bind(14);
     objectManager->SelectObject(6);
     objectManager->SetShadingMode(SMOOTH_SHADING); // Possible values: FLAT_SHADING e SMOOTH_SHADING
-    objectManager->SetRenderMode(USE_MATERIAL);    // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
-    objectManager->Unitize();
+    objectManager->SetRenderMode(USE_TEXTURE_AND_MATERIAL);    // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
+    //objectManager->Unitize();
     objectManager->Draw();
     glPopMatrix();
 }
@@ -2307,7 +2309,7 @@ void init(void)
     preencheVetorBarrinhas();
 
     textureManager = new glcTexture();            // Criação do arquivo que irá gerenciar as texturas
-    textureManager->SetNumberOfTextures(14);       // Estabelece o número de texturas que será utilizado
+    textureManager->SetNumberOfTextures(15);       // Estabelece o número de texturas que será utilizado
     textureManager->CreateTexture("../data/wood.png", 0); // Para testar magnificação, usar a imagem marble128
     textureManager->CreateTexture("../data/arkanoidd.png", 1);
     textureManager->CreateTexture("../data/paper.png", 3);
@@ -2322,6 +2324,7 @@ void init(void)
     textureManager->CreateTexture("../data/sky.png", 11);
     textureManager->CreateTexture("../data/sky2.png", 12);
     textureManager->CreateTexture("../data/skybarriga.png", 13);
+    textureManager->CreateTexture("../data/Diffuse_2K.png", 14);
 
 }
 
