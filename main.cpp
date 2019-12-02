@@ -1285,7 +1285,7 @@ void desenhaBarrinhasDeBater()
             {
                 glBegin(GL_QUADS);
                 CalculaNormal(t[0], &vetorNormal);
-                glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
+                glNormal3f( vetorNormal.x, vetorNormal.y, vetorNormal.z);
                 if (verificaColisaoTriangulo(t[0]))
                 {
                     refleteBolinha(vetorNormal, 8);
@@ -1331,6 +1331,7 @@ void desenhaBarrinhasDeBater()
                 glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
                 if (verificaColisaoTriangulo(t[3]))
                 {
+                    vetorMovimentoBolinha.v1.y *= -1;
                     refleteBolinha(vetorNormal, 11);
                     vetorBloquinhos[cont].mostra = false;
                 }
@@ -1359,6 +1360,7 @@ void desenhaBarrinhasDeBater()
                 glNormal3f(vetorNormal.x, vetorNormal.y, vetorNormal.z);
                 if (verificaColisaoTriangulo(t[5]))
                 {
+                    vetorMovimentoBolinha.v1.y *= -1;
                     refleteBolinha(vetorNormal, 13);
                     vetorBloquinhos[cont].mostra = false;
                 }
@@ -2030,8 +2032,8 @@ void mouse(int button, int state, int x, int y)
                 if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
                 {
                     desenhaSetaControle = false;
-                    vetorMovimentoBolinha.v1.x = vetorSeta->v1.x / 70;
-                    vetorMovimentoBolinha.v1.y = vetorSeta->v1.y / 70;
+                    vetorMovimentoBolinha.v1.x = vetorSeta->v1.x / 150;
+                    vetorMovimentoBolinha.v1.y = vetorSeta->v1.y / 150;
                     primeiroLancamento = true;
                 }
             }
